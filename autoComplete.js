@@ -1,4 +1,4 @@
-const createAutoComplete = ({ root }) => {
+const createAutoComplete = ({ root, renderOption, onOptionSelect }) => {
   root.innerHTML = `
     <lable><b> Search for a Movie</b></lable>
     <input class="input"/>
@@ -29,16 +29,12 @@ const createAutoComplete = ({ root }) => {
       // check broken image poster
 
       option.classList.add("dropdown-item");
-      option.innerHTML = `
-          <img src="${imgSrc}"/>
-           ${movie.Title}
-        `;
-
+      option.innerHTML = renderOption(movie);
       // select movie and close the drop menu
       option.addEventListener("click", () => {
         dropdown.classList.remove("is-active");
         input.value = movie.Title;
-        onMovieSelect(movie);
+        onOptionSelect(movie);
       });
 
       resultsWrapper.appendChild(option);
