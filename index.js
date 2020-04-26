@@ -1,7 +1,5 @@
 // autocomplete
-
-createAutoComplete({
-  root: document.querySelector(".autocomplete"),
+const autoCompleteConfig = {
   renderOption(movie) {
     const imgSrc = movie.Poster === "N/A" ? "" : movie.Poster;
     return `
@@ -9,9 +7,7 @@ createAutoComplete({
          ${movie.Title} (${movie.Year})
       `;
   },
-  onOptionSelect(movie) {
-    onMovieSelect(movie);
-  },
+
   inputValue(movie) {
     return movie.Title;
   },
@@ -29,10 +25,31 @@ createAutoComplete({
 
     return response.data.Search;
   }
+};
+
+createAutoComplete({
+  ...autoCompleteConfig,
+  root: document.querySelector("#left-autocomplete"),
+  onOptionSelect(movie) {
+    document.querySelector(".tutorial").classList.add("is-hidden");
+    onMovieSelect(movie, document.querySelector("#left-summary"), "left");
+  }
 });
 
+createAutoComplete({
+  ...autoCompleteConfig,
+  root: document.querySelector("#right-autocomplete"),
+  onOptionSelect(movie) {
+    document.querySelector(".tutorial").classList.add("is-hidden");
+    onMovieSelect(movie, document.querySelector("#right-summary"), "right");
+  }
+});
+
+let leftMovie;
+let rightMovie;
+
 // onMovieSelect
-const onMovieSelect = async movie => {
+const onMovieSelect = async (movie, summaryElement, side) => {
   const response = await axios.get("http://www.omdbapi.com/?", {
     params: {
       apikey: "ac9547f2",
@@ -40,7 +57,20 @@ const onMovieSelect = async movie => {
     }
   });
 
-  document.querySelector("#summary").innerHTML = movieTemplete(response.data);
+  summaryElement.innerHTML = movieTemplete(response.data);
+  if (side === "left") {
+    leftMovie = response.data;
+  } else {
+    rightMovie = response.data;
+  }
+
+  if (leftMovie && rightMovie) {
+    runComparison();
+  }
+};
+
+const runComparison = () => {
+  console.log("Time for comparison");
 };
 
 // movie templete
@@ -61,6 +91,8 @@ const movieTemplete = movieDetail => {
         </div>
       </div>
   </article>
+
+  
   <article class="notification is-primary">
     <p class="title">${movieDetail.Awards}</p>
     <p class="subtitle">Awards</p>
