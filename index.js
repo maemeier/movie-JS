@@ -76,6 +76,16 @@ const runComparison = () => {
 // movie templete
 
 const movieTemplete = movieDetail => {
+  // remove $ and comma
+  const dollars = parseInt(
+    movieDetail.BoxOffice.replace(/\$/g, "").replace(/,/g, "")
+  );
+  const metaScore = parseInt(movieDetail.Metascore);
+  const imdbRating = parseFloat(movieDetail.imdbRating);
+  const imdbVotes = parseInt(movieDetail.imdbVotes.replace(/,/g, ""));
+
+  console.log(metaScore, imdbRating, imdbVotes);
+
   return `
   <article class="media">
     <figure class="media-left">
@@ -92,7 +102,7 @@ const movieTemplete = movieDetail => {
       </div>
   </article>
 
-  
+
   <article class="notification is-primary">
     <p class="title">${movieDetail.Awards}</p>
     <p class="subtitle">Awards</p>
